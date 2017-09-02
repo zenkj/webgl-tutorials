@@ -9,7 +9,7 @@
         <script type="text/javascript" src="gl-matrix.js"></script>
     </head>
     <body onload="webGLStart();">
-        <canvas id="main" width="800" height="600"</canvas>
+        <canvas id="main" width="800" height="600"></canvas>
         <script>
             var gl;
             var shaderProgram;
@@ -45,7 +45,8 @@
 
             function tick(currTime) {
                 requestAnimationFrame(tick);
-                drawScene(currTime);
+                if (textureLoaded)
+                    drawScene(currTime);
             }
 
             function initBuffers() {
@@ -162,6 +163,7 @@
             }
 
             var myTexture;
+            var textureLoaded = false;
 
             function initTexture() {
                 myTexture = gl.createTexture();
@@ -170,12 +172,23 @@
                     gl.bindTexture(gl.TEXTURE_2D, myTexture);
                     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
                     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, myImage);
-                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                    //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+                    //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+                    //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+                    //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+                    //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
                     gl.bindTexture(gl.TEXTURE_2D, null);
+                    textureLoaded = true;
                 }
 
-                myImage.src = "./lightning.jpg";
+                //myImage.crossOrigin = '';
+                //myImage.src = "lightning512x256.jpg";
+                //myImage.src = "lightning512x512.jpg";
+                myImage.src = "lightning.jpg";
+                //myImage.src = "http://images.china.cn/attachement/jpg/site1000/20070823/0011432109c4083792350b.jpg";
             }
 
             var startTime = null;
